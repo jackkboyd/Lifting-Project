@@ -18,5 +18,15 @@ df = pd.read_excel(excelFile, sheet_name= 'For DB - Lifts')
 engine = create_engine(f'postgresql+psycopg2://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}')
 
 #function to create new members and retrieve ID 
-def createNewMembers(connection, currentDimension, )
+def createRoutineNewMembers(connection, routineCode):
+    checkQuery = 'Select ID from lift."DimRoutines" where "RoutineCode" = %s'
+    result = connection.execute(checkQuery, (routineCode,)).fetchone()[0]
+
+    if result:
+            return result['id']
+    else:
+        insertQuery = 'INSERT INTO lift."DimRoutines" ("RoutineCode") VALUES (%s) RETURNING "RoutineID"'
+        newID = connection.execute(insertQuery, (routineCode,)).fetchone()[0]
+    return newID
+
 
