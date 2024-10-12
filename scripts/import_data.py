@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 import psycopg2
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 
 #retrieve environment variables
 USER = os.getenv('DATABASE_USER')
@@ -11,7 +11,7 @@ DATABASE = os.getenv('DATABASE_NAME')
 PORT = os.getenv('DATABASE_PORT')
 
 #load the excel file into data frame
-excelFile = 'data/liftingexceldoc.xlsx'
+excelFile = '../data/liftingexceldoc.xlsx'
 df = pd.read_excel(excelFile, sheet_name= 'For DB - Lifts')
 
 #create the connection engine
@@ -31,14 +31,14 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue,):
         -Associated ID of the dimension member
     """
 
-    checkQuery = f'Select "{IDColumn}" from lift."{tableName}" where "{codeColumn}" = %s'
-    result = connection.execute(checkQuery, (codeValue,)).fetchone()[0]
+    checkQuery = text(f'Select "{IDColumn}" from lift."{tableName}" where "{codeColumn}" = :codeValue')
+    result = connection.execute(checkQuery, {'codeValue': codeValue}).fetchone()
 
     if result:
             return result['{IDColumn}']
     else:
-        insertDimQuery = f'INSERT INTO lift."{tableName}" ("{codeColumn}") VALUES (%s) RETURNING "{IDColumn}"'
-        newID = connection.execute(insertDimQuery, ({codeValue},)).fetchone()[0]
+        insertDimQuery = text(f'INSERT INTO lift."{tableName}" ("{codeColumn}") VALUES (:codeValue) RETURNING "{IDColumn}"')
+        newID = connection.execute(insertDimQuery, {'codeValue': codeValue}).fetchone()[0]
     return newID
 
 #create new members and insert into fact table
@@ -54,5 +54,5 @@ with engine.connect() as connection:
         '''
         connection.execute(insertFactQuery,(routineID,workoutID,row['MovementName'],row['Reps1'],row['Weight1'],row['Reps2'],row['Weight2'],row['Reps3'],row['Weight3'],row['Reps4'],row['Weight4'],row['IsSuperset'],row['IsSkipped'],row['ApplyDate'],row['Sequence'],row['IsSub']))
 
-
+print("Data imported successfully!")
 
