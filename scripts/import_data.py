@@ -119,11 +119,11 @@ with engine.connect() as connection:
                 'Weight3' :float(row['Weight3']) if pd.notna(row['Weight3']) and row['Weight3'] not in ['None', ''] else 0,
                 'Reps4' :int(row['Reps4']) if pd.notna(row['Reps4']) and row['Reps4'] not in ['None', ''] else 0,
                 'Weight4' :float(row['Weight4']) if pd.notna(row['Weight4']) and row['Weight4'] not in ['None', ''] else 0,
-                'IsSuperset' :bool(row['IsSuperset'] if row['IsSuperset'] in ['True','1'] else False),
-                'IsSkipped' :bool(row['IsSkipped'] if row['IsSkipped'] in ['True','1'] else False),
+                'IsSuperset' :bool(row['IsSuperset'] if pd.notna(row['IsSuperset']) and row['IsSuperset'] in [1, 'True'] else False),
+                'IsSkipped' :bool(row['IsSkipped'] if pd.notna(row['IsSkipped']) and row['IsSkipped'] in [1, 'True'] else False),
                 'ApplyDate' :pd.to_datetime(row['ApplyDate']).date() if pd.notnull(row['ApplyDate']) else datetime(1900, 1, 1).date(),
                 'Sequence' :int(row['Sequence']) if row['Sequence'] else 0,
-                'IsSub' :bool(row['IsSub'] if row['IsSub'] in ['IsSub','1'] else False),
+                'IsSub' :bool(row['IsSub'] if pd.notna(row['IsSub']) and row['IsSub'] in [1, 'True'] else False),
                 'UserID' :str(row['UserID'] if row['UserID'] in ['NaN',''] else '0')
             }
 
