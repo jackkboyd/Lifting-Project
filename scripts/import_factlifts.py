@@ -72,6 +72,7 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_
 #create new members and insert into fact table
 with engine.connect() as connection:
     transaction = connection.begin()
+    
     try:
         for index, row in df.iterrows():
 
