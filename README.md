@@ -9,3 +9,6 @@ This is a first draft to get familiar with git / general best practices
 
 ## Pipelines 
 Pipeline 1: I am extracting data from an excel document and loading it onto my AWS RDS server. As part of this pipeline I am creating new members via fact file imports to manage the size of my dimension tables. I'll also be implementing a mini file review process as part of the import to ensure data quality. 
+
+## This is a test
+Testing commit in new environment
