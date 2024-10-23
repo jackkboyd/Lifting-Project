@@ -2,17 +2,18 @@ import pandas as pd
 import os
 from sqlalchemy import text
 from datetime import datetime
-from utils get setupLogger, createNewMembers, setupConnection
+from utils import setupLogger, createNewMembers, setupConnection
 
 #create the logger
-logger = setupLogger('import-fact-lifts')
+logging = setupLogger('import-fact-lifts')
 
 #connect to db
 engine = setupConnection()
-logger.info('Database connection established successfully.')
+logging.info('Database connection established successfully.')
 
-#load the excel file into data frame
-excelFile = '../data/liftingexceldoc.xlsx'
+#load the excel file into data frame + make system agnostic 
+baseDir = os.path.dirname(os.path.abspath(__file__))
+excelFile = os.path.join(baseDir, '..','data', 'liftingexceldoc.xlsx')
 df = pd.read_excel(excelFile, sheet_name= 'For DB - Routines')
 
 #create new members and retrieve correct IDs 
