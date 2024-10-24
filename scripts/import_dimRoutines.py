@@ -5,7 +5,7 @@ from datetime import datetime
 from utils import setupLogger, createNewMembers, setupConnection
 
 #create the logger
-logging = setupLogger('import-fact-lifts')
+logging = setupLogger('import-dim-routines')
 
 #connect to db
 engine = setupConnection()
@@ -24,69 +24,70 @@ with engine.connect() as connection:
         for index, row in df.iterrows():
 
             #set fk values 
-            workoutFkValues: {'MovementID':0} # type: ignore
+            workoutFkValues = {'MovementID': 0}
+            logging.info('FK Values Set.')
             
             #retrieve IDs and create new members
             workout1ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout1Code',
-                'Workout1ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout1Code'],
                 workoutFkValues
             )
             workout2ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout2Code',
-                'Workout2ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout2Code'],
                 workoutFkValues
             )
             workout3ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout3Code',
-                'Workout3ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout3Code'],
                 workoutFkValues
             )
             workout4ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout4Code',
-                'Workout4ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout4Code'],
                 workoutFkValues
             )
             workout5ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout5Code',
-                'Workout5ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout5Code'],
                 workoutFkValues
             )
             workout6ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout6Code',
-                'Workout6ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout6Code'],
                 workoutFkValues
             )
             workout7ID = createNewMembers(
                 connection, 
                 'DimWorkouts',
-                'Workout7Code',
-                'Workout7ID',
+                'WorkoutCode',
+                'WorkoutID',
                 row['Workout7Code'],
                 workoutFkValues
             )
-             
+            logging.info('IDs created / retrieved.')
             #create update statement
             updateDimQuery = text('''UPDATE lift."DimRoutines" 
-                                SET "RoutineName" = ,
+                                SET "RoutineName" = :routineName,
                                 "Workout1ID" = :workout1ID,
                                 "Workout2ID" = :workout2ID,
                                 "Workout3ID" = :workout3ID,
@@ -96,7 +97,7 @@ with engine.connect() as connection:
                                 "Workout7ID" = :workout7ID,
                                 "StartDate" = :startdate,
                                 "EndDate" = :enddate
-                                WHERE "RoutineCode" = row['RoutineCode']
+                                WHERE "RoutineCode" = :routineCode
             '''
             )
             
@@ -111,7 +112,8 @@ with engine.connect() as connection:
                 'workout7ID':workout7ID,
                 'routineName': str(row['RoutineName']) if pd.notnull(row['RoutineName']) else '',
                 'startdate': pd.to_datetime(row['StartDate']).date() if pd.notnull(row['StartDate']) else datetime(1900,1,1).date(),
-                'enddate': pd.to_datetime(row['EndDate']).date() if pd.notnull(row['EndDate']) else datetime(1900,1,1).date()
+                'enddate': pd.to_datetime(row['EndDate']).date() if pd.notnull(row['EndDate']) else datetime(1900,1,1).date(),
+                'routineCode' :int(row['RoutineCode']) if pd.notnull(row['RoutineCode']) and row['RoutineCode'] not in ['None',''] else 0
             }
 
             logging.info(f"Inserting data for index {index}: {params}")

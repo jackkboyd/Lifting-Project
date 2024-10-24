@@ -1,6 +1,6 @@
 import os
 import logging
-import psycopg2
+import psycopg
 from sqlalchemy import create_engine, text
 
 #1 set up logging
@@ -32,7 +32,7 @@ def getDBCreds ():
 #3 create engine connection
 def setupConnection ():
     USER, PASSWORD, ENDPOINT, DATABASE, PORT = getDBCreds()
-    engine = create_engine(f'postgresql+psycopg2://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}')
+    engine = create_engine(f'postgresql+psycopg://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}')
     return engine
 
 #4 create new members script
