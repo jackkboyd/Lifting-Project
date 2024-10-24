@@ -7,11 +7,11 @@ from utils import setupLogger, setupConnection
 #craete new members not needed - importing into a dimension table with no fk constraints
 
 #create the logger
-logger = setupLogger('import-dim-workouts')
+logging = setupLogger('import-dim-workouts')
 
 #connect to db
 engine = setupConnection()
-logger.info('Database connection established successfully.')
+logging.info('Database connection established successfully.')
 
 #load the excel file into data frame + make system agnostic 
 baseDir = os.path.dirname(os.path.abspath(__file__))
@@ -26,16 +26,16 @@ with engine.connect() as connection:
 
             #create update statement 
 
-            updateDimQuery = '''UPDATE lift."DimWorkouts"
+            updateDimQuery = text('''UPDATE lift."DimWorkouts"
                                 SET "WorkoutName" = :WorkoutName,
-                                "MovementName" = 'MovementName,
+                                "MovementName" = :MovementName,
                                 "MovementSequence" = :MovementSequence,
                                 "IsSuperSet" = :IsSuperSet,
                                 "StartDate" = :StartDate,
-                                "EndDate" = :EndDate,
-                                WHERE "WorkoutCode" = row['WorkoutCode']
+                                "EndDate" = :EndDate
+                                WHERE "WorkoutCode" = :WorkoutCode
             '''
-            
+            )
             #set parameters for current row
             params = {
                 'WorkoutName': row['WorkoutName'],
@@ -44,9 +44,17 @@ with engine.connect() as connection:
                 'IsSuperSet' : bool(row['IsSuperset'] if pd.notna(row['IsSuperset']) and row['IsSuperset'] in [1, 'True'] else False),
                 'StartDate' : pd.to_datetime(row['StartDate']).date() if pd.notnull(row['StartDate']) else datetime(1900,1,1).date(),
                 'EndDate' : pd.to_datetime(row['EndDate']).date() if pd.notnull(row['EndDate']) else datetime(1900,1,1).date(),
+                'WorkoutCode' : int(row['WorkoutCode']) if pd.notnull(row['WorkoutCode']) and row['WorkoutCode'] not in ['None',''] else 0
             }
-        
+
+            logging.info(f"Inserting data for index {index}: {params}")
+
+            connection.execute(updateDimQuery,params)
+
+        transaction.commit()
+        print("Transaction committed successfully")
+
     except Exception as e:
         transaction.rollback()
-        logger.error(f"Error during transaction: {e}")
+        logging.error(f"Error during transaction: {e}")
         print("Transaction rolled back due to error")
