@@ -35,6 +35,9 @@ with engine.connect() as connection:
             routineFkValues = {'Workout1ID':0, 'Workout2ID':0, 'Workout3ID':0, 'Workout4ID':0, 'Workout5ID':0, 'Workout6ID':0, 'Workout7ID':0}
             workoutFkValues = {'MovementID': 0}
 
+            #create pk dictionaries for each column that has a unique constraint other than the code itself
+            workoutPkValues = {'MovementSequence': row['Sequence']}
+
             routineID = createNewMembers(
                 connection, 
                 'DimRoutines',
@@ -51,7 +54,8 @@ with engine.connect() as connection:
                 'WorkoutCode', 
                 'WorkoutID',
                 row['WorkoutCode'],
-                workoutFkValues
+                workoutFkValues,
+                workoutPkValues
             )
             print("Retrieved new workoutID")
 

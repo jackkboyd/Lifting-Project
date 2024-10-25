@@ -34,6 +34,7 @@ with engine.connect() as connection:
                                 "StartDate" = :StartDate,
                                 "EndDate" = :EndDate
                                 WHERE "WorkoutCode" = :WorkoutCode
+                                AND "MovementSequence" = :MovementSequence
             '''
             )
             #set parameters for current row

@@ -36,7 +36,7 @@ def setupConnection ():
     return engine
 
 #4 create new members script
-def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_constraints={}):
+def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_constraints={}, uniqueCodes={}):
     """
     function to create new members and retrieve ID 
     Parameters:
@@ -47,6 +47,7 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_
         -codeValue (str) - the actual code to insert / refer to 
         -fk_constraints (dict) - fields on dimensions we are creating new members for that have fk constraints
             -If no fk value is provided it defaults to 0
+        -otherCodes (dict) - other colummns in the dimension table that together create the PK / a Unique constraint
 
     Returns:
         -Associated ID of the dimension member
@@ -55,19 +56,36 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_
     #if no ID code is passed through ID defaults to 0
     fk_values = {col: fk_constraints.get(col,0) for col in fk_constraints}
 
+    #create a dictionary with columns / values for all PK / Unique columns other than the code itself
+    pk_values = {col: uniqueCodes.get(col,0) for col in uniqueCodes}
+
     #create list of column names 
-    columns = [codeColumn] + list(fk_values.keys())
-    placeholders = [':codeValue'] + [f':{col}' for col in fk_values.keys()]
+    columns = [codeColumn] + list(fk_values.keys()) + list(pk_values.keys())
+    placeholders = [':codeValue'] + [f':{col}' for col in fk_values.keys()] + [f':{col}' for col in pk_values.keys()]
 
     checkQuery = text(f'Select "{IDColumn}" from lift."{tableName}" where "{codeColumn}" = :codeValue')
-    result = connection.execute(checkQuery, {'codeValue': codeValue}).fetchone()
+
+    #dynamically construct check query if unique contraints are provided
+    if uniqueCodes:
+         
+        #create list of unique constraints
+        uniqueConditions = [text(f'"{pk}" = :{pk}') for pk in pk_values.keys()]
+
+        #join ands for unique constraints 
+        uniqueConditionsClause = 'AND '.join(uniqueConditions)
+
+        #join uniqueConditions to checkQuery
+        checkQuery = text(f'{checkQuery} AND {uniqueConditionsClause}')
+
+    params = {'codeValue': codeValue, **pk_values}
+    result = connection.execute(checkQuery, params).fetchone()
 
     if result:
             print("New member exists in the dim")
             return result[0]
     else:
         insertDimQuery = text(f'INSERT INTO lift."{tableName}" ({", ".join(f'"{col}"' for col in columns)}) VALUES ({", ".join(placeholders)}) RETURNING "{IDColumn}"')
-        params = {'codeValue': codeValue, **fk_values}
+        params = {'codeValue': codeValue, **fk_values, **pk_values}
         newID = connection.execute(insertDimQuery, params).fetchone()[0]   
         print("New member created in the dim")
     return newID
