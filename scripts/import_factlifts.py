@@ -84,7 +84,7 @@ with engine.connect() as connection:
                 'ApplyDate' :pd.to_datetime(row['ApplyDate']).date() if pd.notnull(row['ApplyDate']) else datetime(1900, 1, 1).date(),
                 'Sequence' :int(row['Sequence']) if row['Sequence'] else 0,
                 'IsSub' :bool(row['IsSub'] if pd.notna(row['IsSub']) and row['IsSub'] in [1, 'True'] else False),
-                'UserID' :str(row['UserID'] if row['UserID'] in ['NaN',''] else '0')
+                'UserID' :int(row['UserID']) if row['UserID'] else 0,
             }
 
             logging.info(f"Inserting data for index {index}: {params}")
