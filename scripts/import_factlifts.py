@@ -37,6 +37,7 @@ with engine.connect() as connection:
 
             #create pk dictionaries for each column that has a unique constraint other than the code itself
             workoutPkValues = {'MovementSequence': row['Sequence']}
+            logging.info("FK and PK dictionaries created.")
 
             routineID = createNewMembers(
                 connection, 

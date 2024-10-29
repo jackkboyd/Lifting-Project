@@ -30,7 +30,7 @@ with engine.connect() as connection:
                                 SET "WorkoutName" = :WorkoutName,
                                 "MovementName" = :MovementName,
                                 "MovementSequence" = :MovementSequence,
-                                "IsSuperSet" = :IsSuperSet,
+                                "IsSuperset" = :IsSuperSet,
                                 "StartDate" = :StartDate,
                                 "EndDate" = :EndDate
                                 WHERE "WorkoutCode" = :WorkoutCode

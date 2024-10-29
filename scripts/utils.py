@@ -63,19 +63,21 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_
     columns = [codeColumn] + list(fk_values.keys()) + list(pk_values.keys())
     placeholders = [':codeValue'] + [f':{col}' for col in fk_values.keys()] + [f':{col}' for col in pk_values.keys()]
 
-    checkQuery = text(f'Select "{IDColumn}" from lift."{tableName}" where "{codeColumn}" = :codeValue')
+    checkQuery = f'Select "{IDColumn}" from lift."{tableName}" where "{codeColumn}" = :codeValue'
 
     #dynamically construct check query if unique contraints are provided
     if uniqueCodes:
          
         #create list of unique constraints
-        uniqueConditions = [text(f'"{pk}" = :{pk}') for pk in pk_values.keys()]
+        uniqueConditions = [(f'"{pk}" = :{pk}') for pk in pk_values.keys()]
 
         #join ands for unique constraints 
         uniqueConditionsClause = 'AND '.join(uniqueConditions)
 
         #join uniqueConditions to checkQuery
-        checkQuery = text(f'{checkQuery} AND {uniqueConditionsClause}')
+        checkQuery += f' AND {uniqueConditionsClause}'
+    
+    checkQuery = text(checkQuery)
 
     params = {'codeValue': codeValue, **pk_values}
     result = connection.execute(checkQuery, params).fetchone()
