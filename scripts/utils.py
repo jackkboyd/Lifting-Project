@@ -2,6 +2,7 @@ import os
 import logging
 import psycopg
 from sqlalchemy import create_engine, text
+import pandas as pd
 
 #1 set up logging
 def setupLogger (log_file_name = 'app'):
@@ -91,3 +92,56 @@ def createNewMembers(connection, tableName, codeColumn, IDColumn, codeValue, fk_
         newID = connection.execute(insertDimQuery, params).fetchone()[0]   
         print("New member created in the dim")
     return newID
+
+#create reaplce and append logic
+def replaceAndAppend(connection, tableName, df, replaceKeys):
+    """
+
+    function to delete out data from table we are inserting into where replace key values match replace key values within df
+    Parameters:
+        -connection - the db connection
+        -tableName (str) - fact table we a replacing out data on
+        -replaceKeys (list) - columns that, when matched by df, corresponding records are deleted and replaced by new data in df
+
+    """
+    #create a df with all replace key values
+    replaceKeyDF = df[replaceKeys].drop_duplicates()
+
+    #start initial delete query
+    deleteQuery = f'DELETE FROM {tableName} WHERE '
+
+    #Intialize empty list to hold formatted tuples
+    tuples = []
+
+    #Iterate through each row in the df
+    for index, row in replaceKeyDF.iterrows():
+        #interate through each column in the df
+        values = []
+        for key in replaceKeys:
+            value = row[key]
+            #reformat any timestamps
+            if isinstance(value, pd.Timestamp):
+                formattedValue = (f"'{value.strftime('%Y-%m-%d')}'")
+            else:
+                formattedValue = f"'{value}'" 
+            
+            values.append(formattedValue)
+
+        tuples.append(f'({", ".join(values)})')
+
+    columnNames = [f'"{col}"' for col in replaceKeyDF.columns]
+
+    columnNamesFormatted = ", ".join(columnNames)
+
+    whereFormatted = f"({columnNamesFormatted}) IN ({", ".join(tuples)})"
+
+    deleteQuery = text(deleteQuery + whereFormatted)
+
+    connection.execute(deleteQuery)
+
+
+
+
+
+
+

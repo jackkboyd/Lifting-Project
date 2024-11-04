@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sqlalchemy import text
 from datetime import datetime
-from utils import setupLogger, createNewMembers, setupConnection
+from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppend
 
 #create the logger
 logging = setupLogger('import-fact-lifts')
@@ -26,6 +26,9 @@ with engine.connect() as connection:
 #create new members and insert into fact table
 with engine.connect() as connection:
     transaction = connection.begin()
+
+    #replace out old data
+    replaceAndAppend(connection,'Lift."FactLifts"', df, ["ApplyDate"])
     
     try:
         for index, row in df.iterrows():
