@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sqlalchemy import text
 from datetime import datetime
-from utils import setupLogger, createNewMembers, setupConnection
+from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppend
 
 #create the logger
 logging = setupLogger('import-fact-weights')
@@ -26,6 +26,9 @@ with engine.connect() as connection:
 
 with engine.connect() as connection:
     transaction = connection.begin()
+
+    #replace out old data
+    replaceAndAppend(connection,'Lift."FactWeights"', df, ["Date"])
 
     try:
         for index, row in df.iterrows():
@@ -52,7 +55,7 @@ with engine.connect() as connection:
             #set params
             params = {
                 'UserID' :userID,
-                'Date' :pd.to_datetime(row['Day']).date() if pd.notnull(row['Day']) else datetime(1900, 1, 1).date(),
+                'Date' :pd.to_datetime(row['Date']).date() if pd.notnull(row['Date']) else datetime(1900, 1, 1).date(),
                 'Weight' :float(row['Weight']) if pd.notna(row['Weight']) and row['Weight'] not in ['None', ''] else 0
             }
 
