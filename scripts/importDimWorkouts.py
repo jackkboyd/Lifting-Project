@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sqlalchemy import text
 from datetime import datetime
-from utils import setupLogger, setupConnection
+from utils import setupLogger, setupConnection, fetchExcelFromS3
 
 #craete new members not needed - importing into a dimension table with no fk constraints
 
@@ -13,10 +13,8 @@ logging = setupLogger('import-dim-workouts')
 engine = setupConnection()
 logging.info('Database connection established successfully.')
 
-#load the excel file into data frame + make system agnostic 
-baseDir = os.path.dirname(os.path.abspath(__file__))
-excelFile = os.path.join(baseDir, '..','data', 'liftingexceldoc.xlsx')
-df = pd.read_excel(excelFile, sheet_name= 'For DB - Workouts')
+#fetch excel file from S3
+df = fetchExcelFromS3('lifting-data-bucket','userdata/liftingdata/liftingexceldoc_20241125_225903.xlsx','For DB - Workouts')
 
 with engine.connect() as connection:
     transaction = connection.begin()

@@ -6,6 +6,7 @@ import pandas as pd
 import boto3
 from botocore.exceptions import ClientError
 import json
+from io import BytesIO
 
 #1 set up logging
 def setupLogger (log_file_name = 'app'):
@@ -165,6 +166,40 @@ def replaceAndAppend(connection, tableName, df, replaceKeys):
     deleteQuery = text(deleteQuery + whereFormatted)
 
     connection.execute(deleteQuery)
+
+def fetchExcelFromS3(bucketName, fileKey, sheetName):
+    '''
+    Retrieves lifting excel file from S3 bucket
+
+    Parameters:
+        -bucketName (str): bucket name that the file lives in
+        -fileKey (str): file key for lifting file
+        -sheetName (str): sheet name of the excel doc to pull data from
+
+    returns: data frame of excel data
+    '''
+    try:
+        #create an S3 client
+        s3Client = boto3.client('s3')
+
+        #grab the object from the bucket
+        response = s3Client.get_object(Bucket=bucketName, Key=fileKey)
+
+        #read excel file into df using bytesio
+        fileData = response['Body'].read()
+        excelFile = BytesIO(fileData)
+
+        df = pd.read_excel(excelFile, sheetName)
+
+        logging.info("Excel file successfully loaded from S3")
+        return df
+
+    except Exception as e:
+        logging.error(f'Error occurred while fetching the excel file from S3: {e}')
+        raise e
+    
+    
+
 
 
 

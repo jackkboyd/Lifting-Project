@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sqlalchemy import text
 from datetime import datetime
-from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppend
+from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppend, fetchExcelFromS3
 
 #create the logger
 logging = setupLogger('import-fact-lifts')
@@ -11,10 +11,8 @@ logging = setupLogger('import-fact-lifts')
 engine = setupConnection()
 logging.info('Database connection established successfully.')
 
-#load the excel file into data frame + make system agnostic 
-baseDir = os.path.dirname(os.path.abspath(__file__))
-excelFile = os.path.join(baseDir, '..','data', 'liftingexceldoc.xlsx')
-df = pd.read_excel(excelFile, sheet_name= 'For DB - Lifts')
+#fetch excel file from S3
+df = fetchExcelFromS3('lifting-data-bucket','userdata/liftingdata/liftingexceldoc_20241125_225903.xlsx','For DB - Lifts')
 
 with engine.connect() as connection:
     try:
