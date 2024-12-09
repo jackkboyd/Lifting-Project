@@ -1,0 +1,130 @@
+
+version: 2
+
+models:
+  - name: factWeights
+    description: "Model to migrate snowflake staging data to prod tables"
+    columns:
+      - name: USERID
+        description: "The unique identifier for the user"
+      - name: DATE
+        description: "The date of the record"
+      - name: WEIGHT
+        description: "The weight lifted by the user"
+    materialized: incremental
+
+  - name: dimroutines
+    description: "Dimension table for routines"
+    columns:
+      - name: ROUTINEID
+        description: "Unique identifier for the routine"
+        tests:
+          - not_null
+          - unique
+      - name: ROUTINECODE
+        description: "Routine code"
+      - name: STARTDATE
+        description: "Start date of the routine"
+        tests:
+          - not_null
+      - name: ENDDATE
+        description: "End date of the routine"
+      - name: ROUTINENAME
+        description: "Name of the routine"
+  - name: dimusers
+    description: "Table to store user data"
+    columns:
+      - name: USERID
+        description: "The unique identifier for the user"
+        tests:
+          - unique
+          - not_null
+      - name: FIRSTNAME
+        description: "The first name of the user"
+      - name: LASTNAME
+        description: "The last name of the user"
+      - name: CURRENTROUTINEID
+        description: "Users current routine"
+      - name: CREATEDATE
+        description: "The date when the user was created"
+      - name: TOTALDAYSLIFTED
+        description: "The total number of days the user has lifted"
+      - name: TOTALTONNAGELIFTED
+        description: "The total tonnage lifted by the user"
+      - name: AGE
+        description: "The age of the user"
+      - name: USERCODE
+        description: "A unique code assigned to the user"
+  - name: dimWorkouts
+    description: "Dimension table for workout data"
+    columns:
+      - name: WORKOUTID
+        description: "The unique identifier for the workout"
+      - name: WORKOUTNAME
+        description: "The name of the workout"
+      - name: MOVEMENTSEQUENCE
+        description: "The sequence of movements in the workout"
+      - name: ISSUPERSET
+        description: "Indicates if following exercise is a superset"
+      - name: STARTDATE
+        description: "First date this workout was implemented"
+      - name: ENDDATE
+        description: "Last time this workouts was part of an active routine"
+      - name: WORKOUTCODE
+        description: "The code associated with the workout"
+      - name: MOVEMENTNAME
+        description: "The name of the exercise in the workout"
+  - name: dimMovements
+    description: "Dimension table for movement data"
+    columns:
+      - name: MOVEMENTID
+        description: "The unique identifier for the movement"
+      - name: MOVEMENTNAME
+        description: "The name of the movement"
+      - name: PRIMARYMUSCLE
+        description: "The primary muscle targeted by the movement"
+      - name: SECONDARYMUSCLE
+        description: "The secondary muscle targeted by the movement"
+      - name: TERTIARYMUSCLE
+        description: "The tertiary muscle targeted by the movement"
+      - name: MOVEMENTCODE
+        description: "The code associated with the movement"
+  - name: factLifts
+    description: "Fact table for tracking all lifting activities"
+    columns:
+      - name: LIFTID
+        description: "Unique identifier for the lift"
+      - name: USERID
+        description: "Identifier for the user performing the lift"
+      - name: ROUTINEID
+        description: "Identifier for the routine"
+      - name: WORKOUTID
+        description: "Identifier for the workout"
+      - name: MOVEMENTID
+        description: "Identifier for the movement"
+      - name: REPS1
+        description: "Repetitions for the first set"
+      - name: WEIGHT1
+        description: "Weight lifted in the first set"
+      - name: REPS2
+        description: "Repetitions for the second set"
+      - name: WEIGHT2
+        description: "Weight lifted in the second set"
+      - name: REPS3
+        description: "Repetitions for the third set"
+      - name: WEIGHT3
+        description: "Weight lifted in the third set"
+      - name: REPS4
+        description: "Repetitions for the fourth set"
+      - name: WEIGHT4
+        description: "Weight lifted in the fourth set"
+      - name: ISSUPERSET
+        description: "Indicates if the following lift is a superset"
+      - name: ISSKIPPED
+        description: "Indicates if the lift was skipped"
+      - name: APPLYDATE
+        description: "Date the lift was performed"
+      - name: SEQUENCE
+        description: "Sequence of the lift in the workout"
+      - name: ISSUB
+        description: "Indicates if the lift is a substitute exercise"

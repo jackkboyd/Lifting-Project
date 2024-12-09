@@ -38,4 +38,4 @@ def fetchParquetFromS3(bucketName, fileKey):
 #update with parquet file you are validating
 df = fetchParquetFromS3('lifting-dms-output-bucket','dms-data/lift/FactLifts/LOAD00000001.parquet')
     
-print(df.head())
+print(df.isnull().sum())

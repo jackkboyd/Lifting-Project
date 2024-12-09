@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: SF_LIFT 
+    database: POSTGRES_LIFTING_DATA
+    schema: SF_LIFT
+    tables:
+      - name: STAGING_FACTWEIGHTS
+        description: "staging table for fact weights"
+      - name: STAGING_DIMROUTINES
+        description: "Staging table for routine dim data"
+      - name: STAGING_DIMUSERS
+        description: "Staging table for users data"
+      - name: STAGING_DIMWORKOUTS
+        description: "Staging table for workouts data"
+      - name: STAGING_DIMMOVEMENTS
+        description: "Staging table for movements data"
+      - name: STAGING_FACTLIFTS
+        description: "Staging table for lifting data"
