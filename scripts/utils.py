@@ -7,6 +7,9 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 from io import BytesIO
+import io
+import pyarrow
+from datetime import datetime
 
 #1 set up logging
 def setupLogger (log_file_name = 'app'):
@@ -198,7 +201,47 @@ def fetchExcelFromS3(bucketName, fileKey, sheetName):
         logging.error(f'Error occurred while fetching the excel file from S3: {e}')
         raise e
     
+def uploadParquetfile(df, file_name, bucket, object_name=None):
+    """Converts a dataframe to a parquet file and uploads to an S3 bucket
+
+    :param df: data frame to be converted to parquet and uploaded
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+    #append timestamp and file type to filename
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+    file_name = f'{file_name}_{timestamp}.parquet'
+    logging.info(f'created new file name {file_name}')
+
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = file_name
+    logging.info('set object name')
+
+    #convert datframe ot parquet leveraging in memory buffer
+    try:
+        buffer = io.BytesIO()
+        df.to_parquet(buffer, engine='pyarrow', index=False)
+        buffer.seek(0)
+        logging.info('converted to parquet in memory')
+    except Exception as e:
+        logging.error(f'Error converting to parquet: {e}')
+        return False
     
+    # Upload the file
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_fileobj(buffer, bucket, object_name)
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
+   
+
+
 
 
 
