@@ -201,10 +201,11 @@ def fetchExcelFromS3(bucketName, fileKey, sheetName):
         logging.error(f'Error occurred while fetching the excel file from S3: {e}')
         raise e
     
-def uploadParquetfile(df, file_name, bucket, object_name=None):
+def uploadParquetfile(df, folder, file_name, bucket, object_name=None):
     """Converts a dataframe to a parquet file and uploads to an S3 bucket
 
     :param df: data frame to be converted to parquet and uploaded
+    :param folder: file path in S3 bucket
     :param file_name: File to upload
     :param bucket: Bucket to upload to
     :param object_name: S3 object name. If not specified then file_name is used
@@ -213,7 +214,7 @@ def uploadParquetfile(df, file_name, bucket, object_name=None):
     #append timestamp and file type to filename
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
-    file_name = f'{file_name}_{timestamp}.parquet'
+    file_name = f'{folder}{file_name}_{timestamp}.parquet'
     logging.info(f'created new file name {file_name}')
 
     # If S3 object_name was not specified, use file_name

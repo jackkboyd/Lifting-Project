@@ -28,7 +28,7 @@ with engine.connect() as connection:
         logging.info('Pulled postgres data to dataframe.')
 
         #convert df to parquet file and upload to S3
-        uploadParquetfile(df, 'parquetDimWorkouts', 'lifting-parquet-files')
+        uploadParquetfile(df,'dimworkouts/','parquetDimWorkouts', 'lifting-parquet-files')
 
     except Exception as e:
         logging.error(f"Error during transaction: {e}")
