@@ -1,6 +1,5 @@
 import os
 import logging
-import psycopg
 from sqlalchemy import create_engine, text
 import pandas as pd
 import boto3
