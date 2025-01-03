@@ -1,5 +1,5 @@
-from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow import DAG # type: ignore
+from airflow.operators.python_operator import PythonOperator # type: ignore
 from datetime import datetime, timedelta
 import sys
 import os
@@ -8,10 +8,10 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../scripts')))
 
 #import functions to pull data from excel doc in S3 to Postgres
-#from importFactLifts import processFactLifts
-from importFactWeights import processFactWeights
-from importDimRoutines import processDimRoutines
-from importDimWorkouts import processDimWorkouts
+from importFactLifts import processFactLifts # type: ignore
+from importFactWeights import processFactWeights # type: ignore
+from importDimRoutines import processDimRoutines # type: ignore
+from importDimWorkouts import processDimWorkouts # type: ignore
 
 # Default arguments for the DAG
 default_args = {
