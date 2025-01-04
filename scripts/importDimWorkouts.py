@@ -8,7 +8,7 @@ def processDimWorkouts():
     #craete new members not needed - importing into a dimension table with no fk constraints
 
     #create the logger
-    logging = setupLogger('import-dim-workouts')
+    logging = setupLogger('/opt/airflow/logs','import-dim-workouts')
 
     #connect to db
     engine = setupConnection()

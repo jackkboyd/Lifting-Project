@@ -6,7 +6,7 @@ from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppe
 
 def processFactLifts():
     #create the logger
-    logging = setupLogger('import-fact-lifts')
+    logging = setupLogger('/opt/airflow/logs','import-fact-lifts')
 
     #connect to db
     engine = setupConnection()

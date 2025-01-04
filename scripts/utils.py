@@ -9,10 +9,11 @@ from io import BytesIO
 import io
 import pyarrow
 from datetime import datetime
+import psycopg2
 
 #1 set up logging
-def setupLogger (log_file_name = 'app'):
-    log_path = f"../logs/{log_file_name}.log"
+def setupLogger (log_file_path, log_file_name = 'app'):
+    log_path = f"{log_file_path}{log_file_name}.log"
 
     logging.basicConfig(
         level=logging.INFO,
@@ -63,7 +64,7 @@ def setupConnection ():
     DATABASE = creds["DATABASE"]
     PORT = creds["PORT"]
 
-    engine = create_engine(f'postgresql+psycopg://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}')
+    engine = create_engine(f'postgresql+psycopg2://{USER}:{PASSWORD}@{ENDPOINT}:{PORT}/{DATABASE}')
     return engine
 
 #4 create new members script

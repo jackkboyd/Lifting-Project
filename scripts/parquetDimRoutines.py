@@ -5,7 +5,7 @@ import pyarrow
 from utils import setupConnection, setupLogger, uploadParquetfile
 
 #setup logging
-logging = setupLogger('dimroutines-parquet-to-S3')
+logging = setupLogger('/opt/airflow/logs','dimroutines-parquet-to-S3')
 
 #connect to db
 engine = setupConnection()

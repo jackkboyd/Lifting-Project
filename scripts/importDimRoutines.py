@@ -6,7 +6,7 @@ from utils import setupLogger, createNewMembers, setupConnection, fetchExcelFrom
 
 def processDimRoutines():
     #create the logger
-    logging = setupLogger('import-dim-routines')
+    logging = setupLogger('/opt/airflow/logs','import-dim-routines')
 
     #connect to db
     engine = setupConnection()

@@ -7,7 +7,7 @@ from utils import setupLogger, createNewMembers, setupConnection, replaceAndAppe
 
 def processFactWeights():
     #create the logger
-    logging = setupLogger('import-fact-weights')
+    logging = setupLogger('/opt/airflow/logs','import-fact-weights')
 
     #connect to db
     engine = setupConnection()
