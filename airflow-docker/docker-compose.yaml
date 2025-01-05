@@ -80,6 +80,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - "/c/Users/boydk/Desktop/Personal\ Lifting\ Project/py-project-directory/scripts:/opt/airflow/scripts"
     - ${AWS_SHARED_CREDENTIALS_FILE}:${AWS_SHARED_CREDENTIALS_FILE}:ro
+    - ./requirements.txt:/requirements.txt
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -149,6 +150,9 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    entrypoint: >
+      bash -c "pip install --no-cache-dir -r /requirements.txt &&
+              exec airflow scheduler"
 
   airflow-worker:
     <<: *airflow-common
@@ -172,6 +176,9 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+    entrypoint: >
+      bash -c "pip install --no-cache-dir -r /requirements.txt &&
+              exec airflow celery worker"
 
   airflow-triggerer:
     <<: *airflow-common

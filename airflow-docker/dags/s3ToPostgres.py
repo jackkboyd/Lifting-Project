@@ -1,5 +1,6 @@
 from airflow import DAG # type: ignore
 from airflow.operators.python_operator import PythonOperator # type: ignore
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator # type: ignore
 from datetime import datetime, timedelta
 import sys
 import os
@@ -58,8 +59,14 @@ with DAG('s3ToPostgresPipeline',
         dag=dag,
     )
 
+    #trigger postgres to parquet dag
+    triggerParquetDAG = TriggerDagRunOperator(
+        task_id='triggerParquetDAG',
+        trigger_dag_id='postgresToS3Pipeline',
+    )
+
     #setting task dependencies
-    task1 >> task2 >> task3 >> task4
+    task1 >> task2 >> task3 >> task4 >> triggerParquetDAG
 
 
 
