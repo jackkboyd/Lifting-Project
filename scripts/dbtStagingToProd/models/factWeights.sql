@@ -1,3 +1,7 @@
+{{ config(
+    materialized='table'
+) }}
+
 with stagingFactWeights as (
         select 
             USERID,

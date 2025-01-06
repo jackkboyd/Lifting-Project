@@ -13,7 +13,7 @@ models:
         description: "The weight lifted by the user"
     materialized: incremental
 
-  - name: dimroutines
+  - name: dimRoutines
     description: "Dimension table for routines"
     columns:
       - name: ROUTINEID
@@ -31,7 +31,7 @@ models:
         description: "End date of the routine"
       - name: ROUTINENAME
         description: "Name of the routine"
-  - name: dimusers
+  - name: dimUsers
     description: "Table to store user data"
     columns:
       - name: USERID

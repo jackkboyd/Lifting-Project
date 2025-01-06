@@ -1,3 +1,7 @@
+{{ config(
+    materialized='table'
+) }}
+
 with stagingDimRoutines as (
     select 
         RoutineID,

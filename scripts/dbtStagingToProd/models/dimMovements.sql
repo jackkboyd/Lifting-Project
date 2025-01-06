@@ -1,3 +1,7 @@
+{{ config(
+    materialized='table'
+) }}
+
 with stagingDimMovements as (
     select 
         MOVEMENTID,

@@ -1,3 +1,7 @@
+{{ config(
+    materialized='table'
+) }}
+
 with stagingDimUsers as (
     select 
         USERID,

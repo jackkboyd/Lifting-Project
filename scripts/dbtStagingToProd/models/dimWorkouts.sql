@@ -1,3 +1,7 @@
+{{ config(
+    materialized='table'
+) }}
+
 with stagingDimWorkouts as (
     select 
         WORKOUTID,

@@ -4,6 +4,7 @@ import logging
 from utils import setupLogger
 import pyarrow
 from io import BytesIO
+import psycopg2
 
 #create the logger
 logging = setupLogger('validate-dms-s3')
@@ -36,6 +37,6 @@ def fetchParquetFromS3(bucketName, fileKey):
         raise e
 
 #update with parquet file you are validating
-df = fetchParquetFromS3('lifting-dms-output-bucket','dms-data/lift/FactLifts/LOAD00000001.parquet')
+df = fetchParquetFromS3('lifting-parquet-files','factlifts/parquetFactLifts_20250105_003346.parquet')
     
-print(df.isnull().sum())
+print(df)

@@ -1,0 +1,4 @@
+2025-01-05 15:37:47,115 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-01-05 15:37:49,684 - ERROR - Error occurred while fetching the excel file from S3: An error occurred (NoSuchKey) when calling the GetObject operation: The specified key does not exist.
+2025-01-05 15:39:29,441 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
+2025-01-05 15:39:48,003 - INFO - Found credentials in shared credentials file: ~/.aws/credentials
