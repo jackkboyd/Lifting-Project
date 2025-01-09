@@ -13,7 +13,7 @@ def processFactLifts():
     logging.info('Database connection established successfully.')
 
     #fetch excel file from S3
-    df = fetchExcelFromS3('lifting-data-bucket','userdata/liftingdata/liftingexceldoc_20241125_225903.xlsx','For DB - Lifts')
+    df = fetchExcelFromS3('lifting-data-bucket','For DB - Lifts')
 
     with engine.connect() as connection:
         try:
@@ -35,7 +35,7 @@ def processFactLifts():
                 #create fk dictionaries for each column with an fk constraint 
                 #these will need to be updated for any new columns with an fk constraint or if the default value changes
                 routineFkValues = {'Workout1ID':0, 'Workout2ID':0, 'Workout3ID':0, 'Workout4ID':0, 'Workout5ID':0, 'Workout6ID':0, 'Workout7ID':0}
-                workoutFkValues = {'MovementID': 0}
+                workoutFkValues = {'MovementName': 0}
 
                 #create pk dictionaries for each column that has a unique constraint other than the code itself
                 workoutPkValues = {'MovementSequence': row['Sequence']}

@@ -14,7 +14,7 @@ def processFactWeights():
     logging.info('Database connection established successfully.')
 
     #fetch excel file from S3
-    df = fetchExcelFromS3('lifting-data-bucket','userdata/liftingdata/liftingexceldoc_20241125_225903.xlsx','Weights')
+    df = fetchExcelFromS3('lifting-data-bucket','Weights')
 
     #test connection
     with engine.connect() as connection:
@@ -32,18 +32,7 @@ def processFactWeights():
 
         try:
             for index, row in df.iterrows():
-
-                #retrieve IDs
-                userID = createNewMembers(
-                    connection,
-                    'DimUsers',
-                    'UserCode',
-                    'UserID',
-                    row['UserCode']
-                )
                 
-                logging.info('IDs created / retrieved.')
-
                 #create update statement
                 updateFactQuery = text('''INSERT INTO lift."FactWeights"
                                     ("UserID","Date","Weight")
@@ -54,7 +43,7 @@ def processFactWeights():
 
                 #set params
                 params = {
-                    'UserID' :userID,
+                    'UserID' :int(row['UserCode']) if row['UserCode'] else 0,
                     'Date' :pd.to_datetime(row['Date']).date() if pd.notnull(row['Date']) else datetime(1900, 1, 1).date(),
                     'Weight' :float(row['Weight']) if pd.notna(row['Weight']) and row['Weight'] not in ['None', ''] else 0
                 }

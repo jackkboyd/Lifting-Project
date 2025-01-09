@@ -170,7 +170,7 @@ def replaceAndAppend(connection, tableName, df, replaceKeys):
 
     connection.execute(deleteQuery)
 
-def fetchExcelFromS3(bucketName, fileKey, sheetName):
+def fetchExcelFromS3(bucketName, sheetName):
     '''
     Retrieves lifting excel file from S3 bucket
 
@@ -186,7 +186,19 @@ def fetchExcelFromS3(bucketName, fileKey, sheetName):
         s3Client = boto3.client('s3')
 
         #grab the object from the bucket
-        response = s3Client.get_object(Bucket=bucketName, Key=fileKey)
+        response = s3Client.list_objects_v2(Bucket=bucketName)
+
+        #get the list of files
+        files = response.get('Contents', [])
+
+        # get the list of files
+        excel_files = [file for file in files if file['Key'].startswith('userdata/liftingdata/liftingexceldoc_') and file['Key'].endswith('.xlsx')]
+
+        excel_files.sort(key=lambda file: file['LastModified'], reverse=True)
+
+        most_recent_file = excel_files[0]['Key']
+
+        response = s3Client.get_object(Bucket=bucketName, Key=most_recent_file)
 
         #read excel file into df using bytesio
         fileData = response['Body'].read()

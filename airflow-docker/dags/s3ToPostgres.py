@@ -20,16 +20,15 @@ default_args = {
     'depends_on_past': False,
     'retries': 1,
     'retry_delay': timedelta(seconds=30),
-    'catchup': False,
 }
 
 # Define the DAG
 with DAG('s3ToPostgresPipeline',
          default_args=default_args,
          description='A pipeline to pull data from Excel (S3) and load into Postgres tables',
-         schedule_interval=None,  
+         schedule_interval='@weekly',  
          start_date=datetime(2025, 1, 1),
-         catchup=False) as dag:
+         catchup=True) as dag:
     
     #process fact lifts
     task1 = PythonOperator(

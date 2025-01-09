@@ -15,7 +15,7 @@ def processDimWorkouts():
     logging.info('Database connection established successfully.')
 
     #fetch excel file from S3
-    df = fetchExcelFromS3('lifting-data-bucket','userdata/liftingdata/liftingexceldoc_20241125_225903.xlsx','For DB - Workouts')
+    df = fetchExcelFromS3('lifting-data-bucket','For DB - Workouts')
 
     with engine.connect() as connection:
         transaction = connection.begin()
