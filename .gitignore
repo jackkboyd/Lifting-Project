@@ -2,5 +2,5 @@
 .DS_Store
 __pycache__/
 /logs
-/airflow-docker/logs
+/airflow-docker/logs/
 /airflow-docker/.env

@@ -20,3 +20,5 @@ import_dimRoutines: This data is loaded after the fact data and merges on the di
 Along with this, new members are created for workouts. 
 
 import_dimWorkouts: This is the final import and populates the attributes on lift.DimWorkouts. This merges onto the already created data similar to import_dimRoutines. 
+
+![Page 1](images/dataPipelineDiagram.png)
