@@ -28,5 +28,11 @@ This repository contains a personal project that is  designed to enhance my skil
 
 ## Pipelines 
 
+### Section In Progress!!
+
 
 ![Page 1](images/dataPipelineDiagram.png)
+
+## Roadmap of Updates
+
+### Section In Progress!!
