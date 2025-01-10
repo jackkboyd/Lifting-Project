@@ -1,24 +1,26 @@
 # Weight Lifting Data Pipeline
 
 ## Overview
-This repository contains a personal project designed to enhance my skills / gain exposure in data engineering. It focuses on creating data pipelines that pull data from an excel doc that tracks all of my weight lifting data. By moving this data into a relational database and then performing some analytics on top of this I'm hoping to gain more insight into my weightlifting journey.
+This repository contains a personal project is  designed to enhance my skills / gain exposure in data engineering. My goal with this pipeline is to pull all of my weightlifting data, which is tracked with excel on my phone, into a visualization tool to gain insights on my training and track my progress. 
 
-## Tools
-I'm using a postgres database hosted on an AWS RDS server. In the future I will be pushing this data to snowflake for more advanced analytics. Finally I am planning on creating a dashboard with PowerBI. I am also planning on scheduling updates with apache airflow and will do some data transformation before importing to snowflake with DBT. 
+> [!IMPORTANT]
+> Many architectual choices in this project are not optimal / are overkill. These choices are intentional and are here to gain exeprience with more tools + concepts.
+
+## Infrastructure  
+
+### Tools & Services  
+![aws-s3](https://img.shields.io/badge/AWS_S3-569A31?style=flat-square&logo=amazons3&logoColor=white)  
+![airflow](https://img.shields.io/badge/Apache_Airflow-017CEE?style=flat-square&logo=apache-airflow&logoColor=white)  
+![docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)  
+![aws-glue](https://img.shields.io/badge/AWS_Glue-232F3E?style=flat-square&logo=amazons3&logoColor=white)  
+![dbt](https://img.shields.io/badge/dbt-FF694B?style=flat-square&logo=dbt&logoColor=white)  
+![looker](https://img.shields.io/badge/Looker-4285F4?style=flat-square&logo=looker&logoColor=white)  
+
+### Databases  
+![postgres](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)  
+![snowflake](https://img.shields.io/badge/Snowflake-29B5E8?style=flat-square&logo=snowflake&logoColor=white)  
 
 ## Pipelines 
-import_factLifts: Data is extracted from my excel document that contains all reps and weights associated with my workouts. This import is run first and not only imports fact data from my workouts, but also creates new dimension members. These dimension members are created via the createNewMembers function and are placed on their respective dimension tables with blank attributes. 
 
-Along with this I've also implemented replace and append logic to determine how historical data interacts with the next upload. In this case replace keys are defined to determine data that should be 'replaced' by the new import, while data that does not match on the replace key gets appended to the table
-
-import_factWeights: Data is extracted from my excel docuemnt that contains all of my weights. This imports is run second and only imports fact data. 
-
-Similar to import_factLifts, this script leverage the replace and append logic
-
-import_dimRoutines: This data is loaded after the fact data and merges on the dimension members that have already been created, populating all of their attributes. I've decided to merge here, instead of merge then append data to keep the size of dimension tables as small as possible.
-
-Along with this, new members are created for workouts. 
-
-import_dimWorkouts: This is the final import and populates the attributes on lift.DimWorkouts. This merges onto the already created data similar to import_dimRoutines. 
 
 ![Page 1](images/dataPipelineDiagram.png)
