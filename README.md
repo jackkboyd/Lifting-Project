@@ -31,7 +31,7 @@ This repository contains a personal project that is  designed to enhance my skil
 ### 1. Excel to S3
 - The first step in the pipeline is moving my local Excel file to an S3 bucket.
 - This is completed with a combination of Task Scheduler, batch scripts, and Python scripts.
-- **Goal:** Establish S3 as the true starting point for the project.
+- The goal of this is to establish S3 as the true starting point for the project.
 
 ### 2. S3 to Postgres
 - Python scripts pick up the latest Excel file on S3 and upload it to PostgreSQL.
@@ -48,7 +48,7 @@ This repository contains a personal project that is  designed to enhance my skil
 - **AWS Glue** is used to migrate the Parquet files from S3 to Snowflake staging tables.
 
 ### 5. Snowflake Staging to Production
-- Data from Snowflake staging tables is moved to production tables using **dbt (data build tool)**.
+- Data from Snowflake staging tables are moved to production tables using **dbt (data build tool)**.
 - This step includes minor data transformations and quality checks to ensure data integrity.
 
 ### 6. Google Looker
@@ -57,6 +57,31 @@ This repository contains a personal project that is  designed to enhance my skil
 
 ![Page 1](images/dataPipelineDiagram.png)
 
-## Roadmap of Updates
+## Roadmap
 
-### Section In Progress!!
+### Current Architectural Issues
+1. **Fix Relationship Between Routines and Workouts**
+   - The relationship between routines and workouts needs to be corrected.
+2. **Update Keys on Fact Lifts**
+   - PKs on Fact Lifts table needs to be updated to account for multiple subbed out exercises
+
+### Enhancements to Implement Later
+1. **Update Security**
+   - Ensure all SQL statements are paramaterized for enhanced security.
+   
+2. **Set Up OAuth for Snowflake**
+   - Configure OAuth for both dbt and AWS Glue integration with Snowflake.
+
+3. **Migrate Docker to EC2**
+   - Move Airflow to an EC2 environment for better synergy with credentialing.
+
+5. **Create a Movement IDs Table**
+   - Add a table for movement IDs to significantly enhance functionality.
+   - As of right now movements are strings on respective fact tables.
+
+9. **Add Rejected Rows Table**
+   - Create a table to log rejected rows for improved error tracking and troubleshooting.
+
+
+
+
