@@ -26,10 +26,34 @@ This repository contains a personal project that is  designed to enhance my skil
 | PostgreSQL     | ![postgres](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white) |  
 | Snowflake      | ![snowflake](https://img.shields.io/badge/Snowflake-29B5E8?style=flat-square&logo=snowflake&logoColor=white)   |  
 
-## Pipelines 
+# Pipeline Overview
 
-### Section In Progress!!
+### 1. Excel to S3
+- The first step in the pipeline is moving my local Excel file to an S3 bucket.
+- This is completed with a combination of Task Scheduler, batch scripts, and Python scripts.
+- **Goal:** Establish S3 as the true starting point for the project.
 
+### 2. S3 to Postgres
+- Python scripts pick up the latest Excel file on S3 and upload it to PostgreSQL.
+- These scripts perform the following tasks:
+  1. Normalize the data.
+  2. Add **replace and append logic**, which deletes records in the target database based on replace keys found in the source data.
+  3. Create new dimension members in the respective dimension tables and replace the codes in the fact table with newly generated IDs.
+
+### 3. Postgres to S3
+- Python scripts move data from PostgreSQL back to an S3 bucket in **Parquet file format**.
+- While leveraging Parquet and another S3 bucket is unnecessary for this project, it provides experience with columnar data storage and Parquet handling.
+
+### 4. S3 (Parquet Files) to Snowflake
+- **AWS Glue** is used to migrate the Parquet files from S3 to Snowflake staging tables.
+
+### 5. Snowflake Staging to Production
+- Data from Snowflake staging tables is moved to production tables using **dbt (data build tool)**.
+- This step includes minor data transformations and quality checks to ensure data integrity.
+
+### 6. Google Looker
+- **Google Looker** is leveraged to create a dashboard for the data.
+- Looker uses views created in Snowflake to present the data in an interactive and visual format.
 
 ![Page 1](images/dataPipelineDiagram.png)
 
