@@ -4,6 +4,7 @@
 This repository contains a personal project that is  designed to enhance my skills / gain exposure in data engineering. My goal with this pipeline is to pull all of my weightlifting data, which is tracked with excel on my phone, into a visualization tool to gain insights on my training and track my progress. 
 
 > [!IMPORTANT]
+> After several months I am sunsetting this project so that I can focus more of my time on learning computer science fundamentals. I plan on refactoring this sometime in the future with higher quality programming! 
 > Many architectual choices in this project are not optimal / are overkill. These choices are intentional and are here to gain exeprience with more tools + concepts.
 
 ## Infrastructure  
